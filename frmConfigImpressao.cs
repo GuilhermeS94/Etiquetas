@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using e2frmw;
 using System.Configuration;
 
 namespace e2Etiquetas
@@ -108,10 +107,10 @@ namespace e2Etiquetas
         {
             try
             {
-                ce.PreencheEtq();
-                ce.PreencheModelo();
-                PreencheDDL();
-                ce.PreencheImpressao(this.ddlImpressao.Text);
+                //ce.PreencheEtq();
+                //ce.PreencheModelo();
+                //PreencheDDL();
+                //ce.PreencheImpressao(this.ddlImpressao.Text);
 
                 PreencheCampos(this.ddlImpressao.Text);
                 mdlInicial = Dados.modelo;
@@ -200,9 +199,9 @@ namespace e2Etiquetas
             Dados.modelo = this.ddlImpressao.Text;
             try
             {
-                ce.PreencheImpressao(this.ddlImpressao.Text);
-                PreencheCampos(this.ddlImpressao.Text);
-                ce.GetIDMdl();
+                //ce.PreencheImpressao(this.ddlImpressao.Text);
+                //PreencheCampos(this.ddlImpressao.Text);
+                //ce.GetIDMdl();
             }
             catch (Exception ex)
             {
@@ -322,10 +321,10 @@ namespace e2Etiquetas
                 if (DialogResult == DialogResult.Yes)
                 {
                     ///atualiza
-                    ce.AtualizaModelo();
-                    ///atualiza form
-                    this.ddlImpressao.DataSource = null;
-                    ce.PreencheModelo();
+                    //ce.AtualizaModelo();
+                    /////atualiza form
+                    //this.ddlImpressao.DataSource = null;
+                    //ce.PreencheModelo();
                     PreencheDDL();
                     ///informa usuário
                     MessageBox.Show("Modelo " + Dados.modelo + " alterado com sucesso!", "Etiquetas");
@@ -336,7 +335,7 @@ namespace e2Etiquetas
             }
             try
             {
-                ce.SalvaModelo();
+                //ce.SalvaModelo();
             }
             catch (Exception ex)
             {
@@ -348,7 +347,7 @@ namespace e2Etiquetas
             this.ddlImpressao.DataSource = null;
             try
             {
-                ce.PreencheModelo();
+                //ce.PreencheModelo();
             }
             catch (Exception ex)
             {
@@ -365,10 +364,10 @@ namespace e2Etiquetas
         {
             try
             {
-                ce.DeletaModelo();
-                MessageBox.Show("Modelo " + modelo + " excluído com sucesso!", "Modelos de Impressão");
-                this.ddlImpressao.DataSource = null;
-                ce.PreencheModelo();
+                //ce.DeletaModelo();
+                //MessageBox.Show("Modelo " + modelo + " excluído com sucesso!", "Modelos de Impressão");
+                //this.ddlImpressao.DataSource = null;
+                //ce.PreencheModelo();
                 PreencheDDL();
             }
             catch (Exception ex)
@@ -434,7 +433,7 @@ namespace e2Etiquetas
             Dados.etiqueta = this.ddlEtiqueta.Text;
             try
             {
-                ce.GetIDEtq();
+                //ce.GetIDEtq();
             }
             catch (Exception ex)
             {

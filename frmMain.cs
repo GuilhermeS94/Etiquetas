@@ -4,8 +4,9 @@ using System.Drawing;
 using System.Drawing.Text;
 using System.Drawing.Printing;
 using System.Collections.Generic;
-using e2frmw;
 using System.Configuration;
+using Controle;
+using Modelo;
 //Zebra using:
 using System.Runtime.InteropServices;
 using System.IO;
@@ -47,7 +48,7 @@ namespace e2Etiquetas
         /// </summary>
         private void btnImportar_Click(object sender, EventArgs e)
         {
-            ce.SelectCont();
+            //ce.SelectCont();
             FrmCont count = new FrmCont(this.Lv);
             count.ShowDialog();
             this.btnTodos.Text = "Marcar Todos";
@@ -160,8 +161,8 @@ namespace e2Etiquetas
                     this.statusLabel.Text = "Aguardando marcações...";
                     return;
                 }
-                ce.PreencheImpressao(this.ddlImpressao.Text);
-                ce.PreencheEtiqueta();
+                //ce.PreencheImpressao(this.ddlImpressao.Text);
+                //ce.PreencheEtiqueta();
 
                 ///Desenha as etiquetas(rects)
                 preencheRect(Dados.etiqueta);
@@ -188,9 +189,12 @@ namespace e2Etiquetas
         {
             try
             {
-                ce.PreencheModelo();
-                this.ddlImpressao.DataSource = Dados.modelos;
-                preencheRect(this.ddlImpressao.Text);
+                this.ddlImpressao.Items.Insert(0, StaticVars.MODELO_DEFAULT);                
+                foreach (var modelo in ModeloDAO.getMDAO().ListarModelos())
+                {
+                    this.ddlImpressao.Items.Insert(modelo.id, modelo.nome);
+                }
+                this.ddlImpressao.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -208,24 +212,15 @@ namespace e2Etiquetas
         }
 
         /// <summary>
-        ///Preencher array de rect e pegar ID do modelo
-        ///(quando modificado pelo botão Tab)
-        /// </summary>
-        private void ddlImpressao_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            LimpaView();
-        }
-
-        /// <summary>
         /// Preenche o array de retangulos para impressão
         /// </summary>
         private void preencheRect(string etiqueta)
         {
             ///limpa a lista
             Dados.lrect.Clear();
-            ce.GetIDMdl();
-            ce.GetIDEtq();
-            ce.PreencheRect();
+            //ce.GetIDMdl();
+            //ce.GetIDEtq();
+            //ce.PreencheRect();
             
             ///pega o modelo ve as medidas da etiqueta
             ///e gera os retangulos de acordo com as config salvas
@@ -378,27 +373,13 @@ namespace e2Etiquetas
 
         private void LimpaView() 
         {
-            Dados.modelo = this.ddlImpressao.Text;
-            if (this.ddlImpressao.DataSource == null)
-                return;
-
-            try
-            {
-                preencheRect(this.ddlImpressao.Text);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, null, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
             this.Lv.Items.Clear();
-            Dados.chk.Clear();
 
-            if (this.btnTodos.Text == "Desmarcar Todos")
-                this.btnTodos.Text = "Marcar Todos";
+            if (this.btnTodos.Text == StaticVars.BTNdsTODOS_TEXT)
+                this.btnTodos.Text = StaticVars.BTNmTODOS_TEXT;
 
             this.statusLabel.Visible = true;
-            this.statusLabel.Text = "Modelo " + Dados.modelo + " selecionado";
+            this.statusLabel.Text = string.Format("Modelo {0} selecionado.", this.ddlImpressao.Text);
         }
 
     }//fim classe

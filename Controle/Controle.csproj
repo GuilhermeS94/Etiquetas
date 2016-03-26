@@ -31,7 +31,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,7 +42,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DAO.cs" />
     <Compile Include="EtiquetaDAO.cs" />
     <Compile Include="ModeloDAO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -49,7 +50,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Modelo\Modelo.csproj">
+    <ProjectReference Include="..\Modelo\Modelo.csproj">
       <Project>{b3ff13a7-0078-4094-b906-1979360ab7e6}</Project>
       <Name>Modelo</Name>
     </ProjectReference>

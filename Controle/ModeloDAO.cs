@@ -13,7 +13,7 @@ namespace Controle
         private static ModeloDAO mDAO;
         private ModeloDAO() { }
 
-        public ModeloDAO getMDAO()
+        public static ModeloDAO getMDAO()
         {
             if (mDAO == null) mDAO = new ModeloDAO();
             return mDAO;

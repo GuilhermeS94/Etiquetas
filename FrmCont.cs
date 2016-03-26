@@ -67,7 +67,7 @@ namespace e2Etiquetas
         {
             try
             {
-                ce.PreencheVIew();
+                //ce.PreencheVIew();
                 ///antes de tudo limpa o que já esta no listview
                 lvw.Items.Clear();
                 Dados.sNome.Clear();

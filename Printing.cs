@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Text;
-using e2frmw;
 using System.Configuration;
 
 namespace e2Etiquetas
@@ -131,7 +130,7 @@ namespace e2Etiquetas
 
             ///salvar o ultimo valor e quantidade impressos
             Dados.contETQ = etqCont;
-            ce.SalvaCont();
+            //ce.SalvaCont();
         }
 
         #endregion

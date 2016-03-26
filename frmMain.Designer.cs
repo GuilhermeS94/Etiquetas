@@ -61,7 +61,6 @@
             this.ddlImpressao.Name = "ddlImpressao";
             this.ddlImpressao.Size = new System.Drawing.Size(395, 21);
             this.ddlImpressao.TabIndex = 1;
-            this.ddlImpressao.SelectedIndexChanged += new System.EventHandler(this.ddlImpressao_SelectedIndexChanged);
             this.ddlImpressao.TextChanged += new System.EventHandler(this.ddlImpressao_TextChanged);
             // 
             // btnConfig

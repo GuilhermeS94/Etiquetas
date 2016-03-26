@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using e2frmw;
 using System.Configuration;
 
 namespace e2Etiquetas
@@ -120,14 +119,14 @@ namespace e2Etiquetas
         {
             try
             {
-                Tpapel.Add("A4");
-                Tpapel.Add("Carta");
-                Tpapel.Add("Contínuo");
-                ce.PreencheEtq();
-                PreencheDDL();
-                ce.PreencheEtiqueta();
-                PreencheCampos(Dados.etiqueta);
-                etqInicial = Dados.etiqueta;
+                //Tpapel.Add("A4");
+                //Tpapel.Add("Carta");
+                //Tpapel.Add("Contínuo");
+                //ce.PreencheEtq();
+                //PreencheDDL();
+                //ce.PreencheEtiqueta();
+                //PreencheCampos(Dados.etiqueta);
+                //etqInicial = Dados.etiqueta;
             }
             catch (Exception ex)
             {
@@ -212,7 +211,7 @@ namespace e2Etiquetas
         {
             try
             {
-                ce.PreencheEtq();
+                //ce.PreencheEtq();
             }
             catch (Exception ex)
             {
@@ -245,7 +244,7 @@ namespace e2Etiquetas
             cmbb.Items.Clear();
             try
             {
-                ce.PreencheEtq();
+                //ce.PreencheEtq();
             }
             catch (Exception ex)
             {
@@ -293,12 +292,12 @@ namespace e2Etiquetas
                 {
                     try
                     {
-                        ce.AtualizaEtiqueta();
-                        MessageBox.Show("Etiqueta " + Dados.etiqueta + " alterada com sucesso!", "Etiquetas", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                        ///atualiza as DownLists
-                        this.ddlTipoPapel.DataSource = null;
-                        this.ddlModelo.DataSource = null;
-                        ce.PreencheEtq();
+                        //ce.AtualizaEtiqueta();
+                        //MessageBox.Show("Etiqueta " + Dados.etiqueta + " alterada com sucesso!", "Etiquetas", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                        /////atualiza as DownLists
+                        //this.ddlTipoPapel.DataSource = null;
+                        //this.ddlModelo.DataSource = null;
+                        //ce.PreencheEtq();
                         PreencheDDL();
                         return;
                     }
@@ -314,11 +313,11 @@ namespace e2Etiquetas
             try
             {
                 ///Salvar
-                ce.SalvaEtiqueta();
-                ///atualiza as DownLists
-                this.ddlTipoPapel.DataSource = null;
-                this.ddlModelo.DataSource = null;
-                ce.PreencheEtq();
+                //ce.SalvaEtiqueta();
+                /////atualiza as DownLists
+                //this.ddlTipoPapel.DataSource = null;
+                //this.ddlModelo.DataSource = null;
+                //ce.PreencheEtq();
                 PreencheDDL();
 
                 MessageBox.Show("Etiqueta " + modelo + " salva com sucesso!", "Etiquetas", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
@@ -338,12 +337,12 @@ namespace e2Etiquetas
         {
             try
             {
-                ce.DeletaEtiqueta();
+                //ce.DeletaEtiqueta();
 
-                ///atualiza as DownLists
-                this.ddlTipoPapel.DataSource = null;
-                this.ddlModelo.DataSource = null;
-                ce.PreencheEtq();
+                /////atualiza as DownLists
+                //this.ddlTipoPapel.DataSource = null;
+                //this.ddlModelo.DataSource = null;
+                //ce.PreencheEtq();
                 PreencheDDL();
 
                 MessageBox.Show("Modelo " + modelo + " exluído com sucesso!", "Etiquetas", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
@@ -514,9 +513,9 @@ namespace e2Etiquetas
             Dados.etiqueta = this.ddlModelo.Text;
             try
             {
-                ce.PreencheEtiqueta();
-                PreencheCampos(this.ddlModelo.Text);
-                ce.GetIDEtq();
+                //ce.PreencheEtiqueta();
+                //PreencheCampos(this.ddlModelo.Text);
+                //ce.GetIDEtq();
             }
             catch (Exception ex)
             {

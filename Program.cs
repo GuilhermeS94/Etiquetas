@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using e2frmw;
 
 namespace e2Etiquetas
 {
@@ -12,7 +11,7 @@ namespace e2Etiquetas
         [STAThread]
         static void Main()
         {
-            Config.ListaConexoes();
+            //Config.ListaConexoes();
 
 
             Application.EnableVisualStyles();
