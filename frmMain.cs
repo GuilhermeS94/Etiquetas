@@ -48,8 +48,12 @@ namespace e2Etiquetas
         /// </summary>
         private void btnImportar_Click(object sender, EventArgs e)
         {
-            //ce.SelectCont();
-            FrmCont count = new FrmCont(this.Lv);
+            if (this.ddlImpressao.SelectedIndex == 0)
+            {
+                MessageBox.Show("Modelo não selecionado!\nSelecione um modelo.", "Modelo de Etiqueta", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            FrmCont count = new FrmCont(this.Lv, this.ddlImpressao.SelectedIndex);
             count.ShowDialog();
             this.btnTodos.Text = "Marcar Todos";
 

@@ -37,7 +37,6 @@
             this.gbFrame3 = new System.Windows.Forms.GroupBox();
             this.Lv = new System.Windows.Forms.ListView();
             this.Codigo = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.Nome = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnTodos = new System.Windows.Forms.Button();
             this.btnImprimir = new System.Windows.Forms.Button();
             this.procurar = new System.Windows.Forms.OpenFileDialog();
@@ -131,8 +130,7 @@
             // Lv
             // 
             this.Lv.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Codigo,
-            this.Nome});
+            this.Codigo});
             this.Lv.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Lv.Location = new System.Drawing.Point(16, 20);
             this.Lv.Name = "Lv";
@@ -144,11 +142,6 @@
             // 
             this.Codigo.Text = "Código";
             this.Codigo.Width = 180;
-            // 
-            // Nome
-            // 
-            this.Nome.Text = "Nome";
-            this.Nome.Width = 180;
             // 
             // btnTodos
             // 
@@ -266,7 +259,6 @@
         private System.Windows.Forms.StatusStrip stsStatus;
         private System.Windows.Forms.ToolStripStatusLabel statusLabel;
         private System.Windows.Forms.ColumnHeader Codigo;
-        private System.Windows.Forms.ColumnHeader Nome;
         private System.Windows.Forms.PrintDialog pdImprimir;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton tbtnSair;
