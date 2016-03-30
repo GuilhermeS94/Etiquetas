@@ -471,7 +471,6 @@
             this.Name = "frmConfigImpressao";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Modelos de Impressão";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmConfigImpressao_FormClosing);
             this.Load += new System.EventHandler(this.frmConfigImpressao_Load);
             this.gbConfig.ResumeLayout(false);
             this.gbConfig.PerformLayout();

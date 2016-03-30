@@ -37,7 +37,7 @@ namespace Controle
                             new ModeloEtq
                             {
                                 id = int.Parse(reader["Id"].ToString()),
-                                etiqueta = new Etiqueta(),
+                                etiqueta = EtiquetaDAO.getEDAO().GetEtiqueta(int.Parse(reader["Id_etiqueta"].ToString())),
                                 nome = reader["nome"].ToString(),
                                 fonte_barcode = reader["fonte_barcode"].ToString(),
                                 fonte_legenda = reader["fonte_legenda"].ToString(),
@@ -77,7 +77,7 @@ namespace Controle
                             new ModeloEtq
                             {
                                 id = int.Parse(reader["Id"].ToString()),
-                                etiqueta = new Etiqueta(),
+                                etiqueta = EtiquetaDAO.getEDAO().GetEtiqueta(int.Parse(reader["Id_etiqueta"].ToString())),
                                 nome = reader["nome"].ToString(),
                                 fonte_barcode = reader["fonte_barcode"].ToString(),
                                 fonte_legenda = reader["fonte_legenda"].ToString(),

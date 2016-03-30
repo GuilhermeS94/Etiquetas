@@ -38,9 +38,15 @@ namespace e2Etiquetas
         /// </summary>
         private void btnConfig_Click(object sender, EventArgs e)
         {
+            if (this.ddlImpressao.SelectedIndex == 0)
+            {
+                MessageBox.Show("Selecione um Modelo para Configurar!", "Modelos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             frmConfigImpressao modelo = new frmConfigImpressao(this.ddlImpressao);
             modelo.ShowDialog();
-            this.ddlImpressao.SelectedItem = Dados.modelo;
+            //this.ddlImpressao.SelectedItem = Dados.modelo;
         }
 
         /// <summary>
@@ -55,7 +61,7 @@ namespace e2Etiquetas
             }
             FrmCont count = new FrmCont(this.Lv, this.ddlImpressao.SelectedIndex);
             count.ShowDialog();
-            this.btnTodos.Text = "Marcar Todos";
+            this.btnTodos.Text = StaticVars.BTNmTODOS_TEXT;
 
             foreach (ListViewItem item in this.Lv.Items)
             {
@@ -89,18 +95,18 @@ namespace e2Etiquetas
                 return;
             }
 
-            if (this.btnTodos.Text == "Marcar Todos")
+            if (this.btnTodos.Text.Equals(StaticVars.BTNmTODOS_TEXT))
             {
                 foreach (ListViewItem item in this.Lv.Items)
                     item.Checked = true;
-                this.btnTodos.Text = "Desmarcar Todos";
+                this.btnTodos.Text = StaticVars.BTNdsTODOS_TEXT;
                 this.statusLabel.Text = "Pronto para impressão";
             }
             else
             {
                 foreach (ListViewItem item in this.Lv.Items)
                     item.Checked = false;
-                this.btnTodos.Text = "Marcar Todos";
+                this.btnTodos.Text = StaticVars.BTNmTODOS_TEXT;
                 this.statusLabel.Text = "Aguardando marcações...";
             }
 

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Configuration;
+using Modelo;
+using Controle;
 
 namespace e2Etiquetas
 {
@@ -13,7 +15,9 @@ namespace e2Etiquetas
         ConEtq ce = new ConEtq();
         public string update;
         private string mdlInicial;
-        
+
+        private ModeloEtq mod;
+        private Etiqueta etq;
 
         /// construtor com parametro
         /// ComboBox para atualizar
@@ -107,13 +111,8 @@ namespace e2Etiquetas
         {
             try
             {
-                //ce.PreencheEtq();
-                //ce.PreencheModelo();
-                //PreencheDDL();
-                //ce.PreencheImpressao(this.ddlImpressao.Text);
-
-                PreencheCampos(this.ddlImpressao.Text);
-                mdlInicial = Dados.modelo;
+                this.mod = ModeloDAO.getMDAO().GetModelo(this.cmbb.SelectedIndex);
+                PreencheCampos();
             }
             catch (Exception ex)
             {
@@ -210,25 +209,7 @@ namespace e2Etiquetas
             }
         }
 
-        /// <summary>
-        /// Atualiza os Param para devolver
-        /// a lista de modelos
-        /// </summary>
-        private void frmConfigImpressao_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            ///atualiza a DownList do form Pai
-            cmbb.DataSource = null;
-            cmbb.Items.Clear();
-            cmbb.DataSource = Dados.modelos;
-
-            ///Se estiver vazio retornar com mesmo valor
-            ///antes de abrir este form
-            if (string.IsNullOrEmpty(this.ddlImpressao.Text))
-                this.ddlImpressao.SelectedItem = mdlInicial;
-
-            Dados.modelo = this.ddlImpressao.Text;
-        }
-
+        
         /// <summary>
         /// preenche as DownLists
         /// </summary>
@@ -258,28 +239,41 @@ namespace e2Etiquetas
         /// <summary>
         /// Le vars preenchida do banco
         /// </summary>
-        private void PreencheCampos(string secao)
+        private void PreencheCampos()
         {
-            this.txtTFonteBarCode.Text = Dados.TamFonteBC.ToString();
-            this.txtTFonteNome.Text = Dados.TamFonteNM.ToString();
-            this.txtFonteNome.Text = Dados.FonteNM;          
+            this.txtTFonteBarCode.Text = mod.tam_font_bc.ToString();// Dados.TamFonteBC.ToString();
+            this.txtTFonteNome.Text = mod.tam_font_leg.ToString();// Dados.TamFonteNM.ToString();
+            this.txtFonteNome.Text = mod.fonte_legenda;// Dados.FonteNM;          
 
             ///Gerador
-            this.txtInicio.Text = Dados.inicio.ToString();
-            this.txtFormato.Text = Dados.formato;
-            this.txtIntervalo.Text = Dados.inter.ToString();
-            this.txtPrefixo.Text = Dados.prefixo;
+            this.txtInicio.Text = mod.inicio.ToString();// Dados.inicio.ToString();
+            this.txtFormato.Text = mod.formato;// Dados.formato;
+            this.txtIntervalo.Text = mod.intervalo.ToString();// Dados.inter.ToString();
+            this.txtPrefixo.Text = mod.prefixo;// Dados.prefixo;
 
             ///DDL's
-            ///Etiquetas
-            this.ddlEtiqueta.SelectedItem = Dados.etiqueta;
+            this.ddlEtiqueta.Items.Insert(0, StaticVars.ETIQUETA_DEFAULT);
+            foreach (var etq in EtiquetaDAO.getEDAO().ListarEtiquetas())
+            {
+                this.ddlEtiqueta.Items.Insert(etq.id, etq.nome);
+            }
+            this.ddlEtiqueta.SelectedIndex = mod.etiqueta.id;
 
-            ///Soment Cod, ou Cod e Nome            
-            this.ddlConteudo.SelectedItem = Dados.conteudo;
+            this.ddlImpressao.Items.Insert(0, StaticVars.MODELO_DEFAULT);
+            foreach (var modelo in ModeloDAO.getMDAO().ListarModelos())
+            {
+                this.ddlImpressao.Items.Insert(modelo.id, modelo.nome);
+            }
+            this.ddlImpressao.SelectedIndex = mod.id;
 
-            ///BarCode Fontes            
-            this.ddlFonteCodigo.SelectedItem = Dados.FonteBC;
+            this.ddlConteudo.Items.Insert(0, StaticVars.CONTEUDO_BL);
+            this.ddlConteudo.Items.Insert(1, StaticVars.CONTEUDO_B);
+            this.ddlConteudo.SelectedText = mod.conteudo;
 
+            this.ddlFonteCodigo.Items.Insert(0, StaticVars.FONTE_CODE128);
+            this.ddlFonteCodigo.Items.Insert(1, StaticVars.FONTE_3OF9);
+            this.ddlFonteCodigo.Items.Insert(2, StaticVars.FONTE_3OF9EXTENDED);
+            this.ddlFonteCodigo.SelectedText = mod.conteudo;
         }
 
         /// <summary>
