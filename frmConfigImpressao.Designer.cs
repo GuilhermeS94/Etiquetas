@@ -119,7 +119,6 @@
             this.ddlEtiqueta.Name = "ddlEtiqueta";
             this.ddlEtiqueta.Size = new System.Drawing.Size(389, 21);
             this.ddlEtiqueta.TabIndex = 2;
-            this.ddlEtiqueta.SelectedIndexChanged += new System.EventHandler(this.ddlEtiqueta_SelectedIndexChanged);
             // 
             // ddlImpressao
             // 
@@ -278,7 +277,6 @@
             this.ddlConteudo.Name = "ddlConteudo";
             this.ddlConteudo.Size = new System.Drawing.Size(284, 21);
             this.ddlConteudo.TabIndex = 8;
-            this.ddlConteudo.SelectedIndexChanged += new System.EventHandler(this.ddlConteudo_SelectedIndexChanged);
             // 
             // lblConteudo
             // 

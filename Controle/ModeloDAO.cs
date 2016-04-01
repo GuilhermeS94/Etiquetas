@@ -115,5 +115,37 @@ namespace Controle
             }
             return true;
         }
+
+        public bool ExcluirModelo(int id)
+        {
+            using (SqlConnection con = new SqlConnection(str_con))
+            {
+                con.Open();
+
+                using (SqlCommand command = new SqlCommand("DELETE FROM Modelo WHERE Id = @id", con))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    command.ExecuteNonQuery();
+                }
+                con.Close();
+            }
+            return true;
+        }
+
+        public bool SalvarModelo(ModeloEtq mod)
+        {
+            using (SqlConnection con = new SqlConnection(str_con))
+            {
+                con.Open();
+
+                using (SqlCommand command = new SqlCommand("INSERT INTO Modelo() VALUES()", con))
+                {
+                    //command.Parameters.AddWithValue("@id", id);
+                    command.ExecuteNonQuery();
+                }
+                con.Close();
+            }
+            return true;
+        }
     }
 }

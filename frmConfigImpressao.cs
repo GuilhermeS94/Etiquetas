@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.Configuration;
 using Modelo;
 using Controle;
+using System.Text.RegularExpressions;
 
 namespace e2Etiquetas
 {
@@ -133,13 +134,13 @@ namespace e2Etiquetas
                 if (this.fntDialog.Font.SizeInPoints < 9.75 || this.fntDialog.Font.SizeInPoints > 72)
                 {
                     MessageBox.Show("O tamanho da fonte deve estar entre 10 e 72 pontos!", "Fontes", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    this.txtTFonteNome.Text = "";
-                    this.txtFonteNome.Text = "";
+                    this.txtTFonteNome.Text = string.Empty;
+                    this.txtFonteNome.Text = string.Empty;
                 }
                 else
                 {
                     this.txtTFonteNome.Text = this.fntDialog.Font.Size.ToString();
-                    this.txtFonteNome.Text = "Arial Narrow";
+                    this.txtFonteNome.Text = this.fntDialog.Font.Name;
                 }
             }
         }
@@ -169,7 +170,7 @@ namespace e2Etiquetas
         /// </summary>
         private void tbtnExcluir_Click(object sender, EventArgs e)
         {
-            if (Dados.IDModelo == 1 && this.ddlImpressao.Text == "Modelo 1")
+            if (this.ddlImpressao.SelectedIndex == 0)
             {
                 MessageBox.Show("Não é permitido excluir este modelo!\nModelo padrão do sistema!", "Modelos de Impressão", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -179,7 +180,7 @@ namespace e2Etiquetas
                 DialogResult = MessageBox.Show("Deseja realmente excluir o modelo " + this.ddlImpressao.Text + " ?", "Modelos de Impressão", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 ///Solicita confirmação
                 if (DialogResult == DialogResult.Yes)
-                    ExcluirModelo(this.ddlImpressao.Text);
+                    ExcluirModelo(this.ddlImpressao.SelectedIndex);
                 else
                     MessageBox.Show("Operação cancelada!", "Modelos de Impressão",MessageBoxButtons.OK,MessageBoxIcon.Stop);
             }
@@ -194,13 +195,11 @@ namespace e2Etiquetas
         /// </summary>
         private void ddlImpressao_SelectedIndexChanged(object sender, EventArgs e)
         {
-            update = this.ddlImpressao.Text;
-            Dados.modelo = this.ddlImpressao.Text;
+            if (this.ddlImpressao.SelectedIndex == 0)
+                return;
             try
             {
-                //ce.PreencheImpressao(this.ddlImpressao.Text);
-                //PreencheCampos(this.ddlImpressao.Text);
-                //ce.GetIDMdl();
+                this.mod = ModeloDAO.getMDAO().GetModelo(this.ddlImpressao.SelectedIndex);
             }
             catch (Exception ex)
             {
@@ -241,15 +240,15 @@ namespace e2Etiquetas
         /// </summary>
         private void PreencheCampos()
         {
-            this.txtTFonteBarCode.Text = mod.tam_font_bc.ToString();// Dados.TamFonteBC.ToString();
-            this.txtTFonteNome.Text = mod.tam_font_leg.ToString();// Dados.TamFonteNM.ToString();
-            this.txtFonteNome.Text = mod.fonte_legenda;// Dados.FonteNM;          
+            this.txtTFonteBarCode.Text = mod.tam_font_bc.ToString();
+            this.txtTFonteNome.Text = mod.tam_font_leg.ToString();
+            this.txtFonteNome.Text = mod.fonte_legenda;
 
             ///Gerador
-            this.txtInicio.Text = mod.inicio.ToString();// Dados.inicio.ToString();
-            this.txtFormato.Text = mod.formato;// Dados.formato;
-            this.txtIntervalo.Text = mod.intervalo.ToString();// Dados.inter.ToString();
-            this.txtPrefixo.Text = mod.prefixo;// Dados.prefixo;
+            this.txtInicio.Text = mod.inicio.ToString();
+            this.txtFormato.Text = mod.formato;
+            this.txtIntervalo.Text = mod.intervalo.ToString();
+            this.txtPrefixo.Text = mod.prefixo;
 
             ///DDL's
             this.ddlEtiqueta.Items.Insert(0, StaticVars.ETIQUETA_DEFAULT);
@@ -268,32 +267,37 @@ namespace e2Etiquetas
 
             this.ddlConteudo.Items.Insert(0, StaticVars.CONTEUDO_BL);
             this.ddlConteudo.Items.Insert(1, StaticVars.CONTEUDO_B);
-            this.ddlConteudo.SelectedText = mod.conteudo;
+            if (mod.conteudo.Equals(StaticVars.CONTEUDO_BL))
+                this.ddlConteudo.SelectedIndex = 0;
+            else
+                this.ddlConteudo.SelectedIndex = 1;
 
             this.ddlFonteCodigo.Items.Insert(0, StaticVars.FONTE_CODE128);
             this.ddlFonteCodigo.Items.Insert(1, StaticVars.FONTE_3OF9);
             this.ddlFonteCodigo.Items.Insert(2, StaticVars.FONTE_3OF9EXTENDED);
-            this.ddlFonteCodigo.SelectedText = mod.conteudo;
+
+            switch (mod.fonte_barcode)
+            {
+                case StaticVars.FONTE_CODE128:
+                    this.ddlFonteCodigo.SelectedIndex = 0;
+                    break;
+
+                case StaticVars.FONTE_3OF9:
+                    this.ddlFonteCodigo.SelectedIndex = 1;
+                    break;
+
+                default:
+                    this.ddlFonteCodigo.SelectedIndex = 2;
+                    break;
+            }
         }
 
         /// <summary>
         /// salva nas vars e insere/altera no banco
         /// </summary>
         private void SalvarModelo(string modelo)
-        {
-            Dados.modelo = modelo;
-            Dados.FonteBC = this.ddlFonteCodigo.Text;
-            Dados.FonteNM = this.txtFonteNome.Text;
-            Dados.TamFonteBC = float.Parse(this.txtTFonteBarCode.Text.Replace(".", ","));
-            Dados.TamFonteNM = float.Parse(this.txtTFonteNome.Text.Replace(".", ","));
-            Dados.etiqueta = this.ddlEtiqueta.Text;
-            ///Modelo - Gerador
-            Dados.inicio = int.Parse(this.txtInicio.Text);
-            Dados.inter = int.Parse(this.txtIntervalo.Text);
-            Dados.formato = this.txtFormato.Text;
-            Dados.prefixo = this.txtPrefixo.Text;
-
-            ///verifica campos obrigatórios em branco            
+        {   
+            //verifica campos vazios
             if (this.txtInicio.Text.Trim().Equals("") || this.txtIntervalo.Text.Trim().Equals("") || 
                 this.txtFormato.Text.Trim().Equals("") || this.ddlImpressao.Text.Trim().Equals("") ||
                 this.txtTFonteBarCode.Text.Trim().Equals("") || this.txtTFonteNome.Text.Trim().Equals(""))
@@ -302,26 +306,45 @@ namespace e2Etiquetas
                 return;
             }
 
+            //verifica tipos numéricos INTEIROS
+            Regex regex = new Regex("^[0-9]*$");
+            if (!regex.IsMatch(this.txtTFonteBarCode.Text.Trim()) ||
+                !regex.IsMatch(this.txtTFonteNome.Text.Trim()) ||
+                !regex.IsMatch(this.txtInicio.Text.Trim()) ||
+                !regex.IsMatch(this.txtIntervalo.Text.Trim()))
+            {
+                MessageBox.Show("Dados preenchidos não são do tipo Inteiro!", "Campos Numéricos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            //verifica se a sequência não é 0
             if (int.Parse(this.txtIntervalo.Text.Trim()) == 0)
             {
                 MessageBox.Show("Dados de sequência inválidos!\nCom zero a sequência não pode ser gerada!", "Sequencial", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            ///Save or Updade?
-            if (this.ddlImpressao.Text == update)
+
+            ModeloEtq mod = new ModeloEtq();
+            mod.nome = this.ddlImpressao.Text;
+            mod.fonte_barcode = this.ddlFonteCodigo.SelectedText;
+            mod.fonte_legenda = this.txtTFonteNome.Text.Trim();
+            mod.tam_font_bc = byte.Parse(this.txtTFonteBarCode.Text.Trim());
+            mod.tam_font_leg = byte.Parse(this.txtTFonteNome.Text.Trim());
+            mod.etiqueta = EtiquetaDAO.getEDAO().GetEtiqueta(this.ddlEtiqueta.SelectedIndex);
+            mod.inicio = int.Parse(this.txtInicio.Text.Trim());
+            mod.intervalo = int.Parse(this.txtIntervalo.Text.Trim());
+            mod.formato = this.txtFormato.Text.Trim();
+            mod.prefixo = this.txtPrefixo.Text.Trim();
+
+            //Atualizar modelo?
+            if (this.ddlImpressao.Text.Trim().Equals(this.mod.nome))
             {      
-                DialogResult = MessageBox.Show("Deseja realmente alterar o modelo " + modelo + " ?", "Etiquetas", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                DialogResult = MessageBox.Show("Deseja realmente alterar o modelo " + this.mod.nome + " ?", "Etiquetas", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (DialogResult == DialogResult.Yes)
                 {
-                    ///atualiza
-                    //ce.AtualizaModelo();
-                    /////atualiza form
-                    //this.ddlImpressao.DataSource = null;
-                    //ce.PreencheModelo();
-                    PreencheDDL();
-                    ///informa usuário
-                    MessageBox.Show("Modelo " + Dados.modelo + " alterado com sucesso!", "Etiquetas");
+                    //update
+                    MessageBox.Show("Modelo " + this.mod.nome + " alterado com sucesso!", "Etiquetas");
                     return;
                 }
                 else
@@ -329,7 +352,7 @@ namespace e2Etiquetas
             }
             try
             {
-                //ce.SalvaModelo();
+                //salvar novo
             }
             catch (Exception ex)
             {
@@ -337,7 +360,7 @@ namespace e2Etiquetas
                 return;
             }
 
-            MessageBox.Show("Modelo " + Dados.modelo + " salvo com sucesso!", "Modelo");
+            MessageBox.Show("Modelo " + mod.nome + " salvo com sucesso!", "Modelo");
             this.ddlImpressao.DataSource = null;
             try
             {
@@ -354,15 +377,15 @@ namespace e2Etiquetas
         /// <summary>
         /// o ID ja esta capturado é só deletar
         /// </summary>
-        private void ExcluirModelo(string modelo)
+        private void ExcluirModelo(int idModelo)
         {
             try
             {
-                //ce.DeletaModelo();
-                //MessageBox.Show("Modelo " + modelo + " excluído com sucesso!", "Modelos de Impressão");
-                //this.ddlImpressao.DataSource = null;
-                //ce.PreencheModelo();
-                PreencheDDL();
+                bool excluiu = false;
+                excluiu = ModeloDAO.getMDAO().ExcluirModelo(idModelo);
+
+                if (excluiu == false)
+                    throw new Exception("Não foi possível excluir o Modelo selecionado.");
             }
             catch (Exception ex)
             {
@@ -404,38 +427,7 @@ namespace e2Etiquetas
             this.txtPrefixo.Focus();
         }
 
-        /// <summary>
-        /// Troca o conteudo
-        /// atualiza param
-        /// </summary>
-        private void ddlConteudo_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ///atualizar params
-            Dados.conteudo = this.ddlConteudo.Text;
-        }
-
-        /// <summary>
-        /// Troca etiqueta
-        /// atualiza param
-        /// </summary>
-        private void ddlEtiqueta_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(this.ddlEtiqueta.Text))
-                this.ddlEtiqueta.SelectedItem = Dados.etiqueta;
-
-            ///atualizar params
-            Dados.etiqueta = this.ddlEtiqueta.Text;
-            try
-            {
-                //ce.GetIDEtq();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, null, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-        }
-
+        
         /// <summary>
         /// Se o modelo for CONTINUO
         /// os tamanhos são outros
@@ -445,25 +437,25 @@ namespace e2Etiquetas
         /// </summary>
         private void txtTFonteBarCode_MouseHover(object sender, EventArgs e)
         {
-            if(Dados.papel == "Contínuo")
+            if(this.mod.tipo_papel.Equals("Contínuo"))
                 tltTBarcode.Show("Tamanho sugerido aproximadamente o dobro\nda altura da etiqueta em milímetros.", this.txtTFonteBarCode);
         }
 
         private void txtTFonteNome_MouseHover(object sender, EventArgs e)
         {
-            if(Dados.papel == "Contínuo")
+            if(this.mod.tipo_papel.Equals("Contínuo"))
                 tltTNome.Show("Tamanho sugerido aproximadamente metade\ndas unidades a mais do que o padrão.",this.txtTFonteNome);
         }
 
         private void lblTFonteBarCode_MouseHover(object sender, EventArgs e)
         {
-            if (Dados.papel == "Contínuo")
+            if (this.mod.tipo_papel.Equals("Contínuo"))
                 tltTBarcode.Show("Tamanho sugerido aproximadamente o dobro\nda altura da etiqueta em milímetros.", this.lblTFonteBarCode);
         }
 
         private void lblTFonteNome_MouseHover(object sender, EventArgs e)
         {
-            if (Dados.papel == "Contínuo")
+            if (this.mod.tipo_papel.Equals("Contínuo"))
                 tltTNome.Show("Tamanho sugerido aproximadamente metade\ndas unidades a mais do que o padrão.", this.lblTFonteNome);
         }
     }
