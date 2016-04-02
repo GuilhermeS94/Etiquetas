@@ -152,7 +152,7 @@ namespace e2Etiquetas
         {
             try
             {
-                SalvarModelo(this.ddlImpressao.Text);
+                SalvarModelo();
             }
             catch (Exception ex)
             {
@@ -200,6 +200,7 @@ namespace e2Etiquetas
             try
             {
                 this.mod = ModeloDAO.getMDAO().GetModelo(this.ddlImpressao.SelectedIndex);
+                PreencheCampos();
             }
             catch (Exception ex)
             {
@@ -251,6 +252,7 @@ namespace e2Etiquetas
             this.txtPrefixo.Text = mod.prefixo;
 
             ///DDL's
+            this.ddlEtiqueta.Items.Clear();
             this.ddlEtiqueta.Items.Insert(0, StaticVars.ETIQUETA_DEFAULT);
             foreach (var etq in EtiquetaDAO.getEDAO().ListarEtiquetas())
             {
@@ -258,13 +260,15 @@ namespace e2Etiquetas
             }
             this.ddlEtiqueta.SelectedIndex = mod.etiqueta.id;
 
+            this.ddlImpressao.Items.Clear();
             this.ddlImpressao.Items.Insert(0, StaticVars.MODELO_DEFAULT);
             foreach (var modelo in ModeloDAO.getMDAO().ListarModelos())
             {
                 this.ddlImpressao.Items.Insert(modelo.id, modelo.nome);
             }
-            this.ddlImpressao.SelectedIndex = mod.id;
+            //this.ddlImpressao.SelectedIndex = mod.id;
 
+            this.ddlConteudo.Items.Clear();
             this.ddlConteudo.Items.Insert(0, StaticVars.CONTEUDO_BL);
             this.ddlConteudo.Items.Insert(1, StaticVars.CONTEUDO_B);
             if (mod.conteudo.Equals(StaticVars.CONTEUDO_BL))
@@ -272,6 +276,7 @@ namespace e2Etiquetas
             else
                 this.ddlConteudo.SelectedIndex = 1;
 
+            this.ddlFonteCodigo.Items.Clear();
             this.ddlFonteCodigo.Items.Insert(0, StaticVars.FONTE_CODE128);
             this.ddlFonteCodigo.Items.Insert(1, StaticVars.FONTE_3OF9);
             this.ddlFonteCodigo.Items.Insert(2, StaticVars.FONTE_3OF9EXTENDED);
@@ -295,7 +300,7 @@ namespace e2Etiquetas
         /// <summary>
         /// salva nas vars e insere/altera no banco
         /// </summary>
-        private void SalvarModelo(string modelo)
+        private void SalvarModelo()
         {   
             //verifica campos vazios
             if (this.txtInicio.Text.Trim().Equals("") || this.txtIntervalo.Text.Trim().Equals("") || 
@@ -323,55 +328,68 @@ namespace e2Etiquetas
                 MessageBox.Show("Dados de sequência inválidos!\nCom zero a sequência não pode ser gerada!", "Sequencial", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
-
+            
             ModeloEtq mod = new ModeloEtq();
             mod.nome = this.ddlImpressao.Text;
-            mod.fonte_barcode = this.ddlFonteCodigo.SelectedText;
+            mod.fonte_barcode = this.ddlFonteCodigo.Text;
             mod.fonte_legenda = this.txtTFonteNome.Text.Trim();
             mod.tam_font_bc = byte.Parse(this.txtTFonteBarCode.Text.Trim());
             mod.tam_font_leg = byte.Parse(this.txtTFonteNome.Text.Trim());
+            mod.tipo_papel = this.ddlConteudo.Text;
+            mod.conteudo = ddlConteudo.Text;
             mod.etiqueta = EtiquetaDAO.getEDAO().GetEtiqueta(this.ddlEtiqueta.SelectedIndex);
             mod.inicio = int.Parse(this.txtInicio.Text.Trim());
             mod.intervalo = int.Parse(this.txtIntervalo.Text.Trim());
             mod.formato = this.txtFormato.Text.Trim();
             mod.prefixo = this.txtPrefixo.Text.Trim();
 
-            //Atualizar modelo?
-            if (this.ddlImpressao.Text.Trim().Equals(this.mod.nome))
-            {      
-                DialogResult = MessageBox.Show("Deseja realmente alterar o modelo " + this.mod.nome + " ?", "Etiquetas", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (DialogResult == DialogResult.Yes)
+            try
+            {
+                //Atualizar modelo?
+                if (this.ddlImpressao.Text.Trim().Equals(this.mod.nome))
                 {
-                    //update
-                    MessageBox.Show("Modelo " + this.mod.nome + " alterado com sucesso!", "Etiquetas");
-                    return;
+                    DialogResult = MessageBox.Show("Deseja realmente alterar o modelo " + this.mod.nome + " ?", "Etiquetas", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (DialogResult == DialogResult.Yes)
+                    {
+                        bool atualizou = false;
+                        atualizou = ModeloDAO.getMDAO().AtualizarModelo(mod);
+
+                        if (atualizou == false)
+                            throw new Exception("Não foi possível salvar as alterações.");
+
+                        MessageBox.Show("Modelo " + this.mod.nome + " alterado com sucesso!", "Etiquetas");
+                    }
+                    else
+                        return;
                 }
                 else
-                    return;
-            }
-            try
-            {
-                //salvar novo
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, null, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+                {
+                    bool salvou = false;
+                    salvou = ModeloDAO.getMDAO().SalvarModelo(mod);
 
-            MessageBox.Show("Modelo " + mod.nome + " salvo com sucesso!", "Modelo");
-            this.ddlImpressao.DataSource = null;
-            try
-            {
-                //ce.PreencheModelo();
+                    if (salvou == false)
+                        throw new Exception("Não foi possível salvar o novo Modelo.");
+
+
+                    MessageBox.Show("Modelo " + mod.nome + " salvo com sucesso!", "Modelo");
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, null, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            PreencheDDL();
+            finally
+            {
+                this.ddlImpressao.Items.Clear();
+                this.ddlImpressao.Items.Insert(0, StaticVars.MODELO_DEFAULT);
+                foreach (var modelo in ModeloDAO.getMDAO().ListarModelos())
+                {
+                    this.ddlImpressao.Items.Insert(modelo.id, modelo.nome);
+                }
+                this.ddlImpressao.SelectedIndex = 0;
+                PreencheCampos();
+            }
         }
 
         /// <summary>

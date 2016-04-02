@@ -138,9 +138,58 @@ namespace Controle
             {
                 con.Open();
 
-                using (SqlCommand command = new SqlCommand("INSERT INTO Modelo() VALUES()", con))
+                using (SqlCommand command = new SqlCommand(@"INSERT INTO Modelo
+                      (Id_etiqueta, nome, fonte_barcode, fonte_legenda, tam_font_bc, tam_font_leg,
+                       conteudo, tipo_papel, inicio, intervalo, formato, prefixo)
+                      VALUES
+                      (@id_etq, @nome, @fonte_bc, @fonte_leg, @t_fonte_bc, @t_fonte_leg,
+                       @conteudo, @t_papel, @inicio, @intervalo, @formato, @prefixo)",
+                      con))
                 {
-                    //command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@id_etq", mod.etiqueta.id);
+                    command.Parameters.AddWithValue("@nome", mod.nome);
+                    command.Parameters.AddWithValue("@fonte_bc", mod.fonte_barcode);
+                    command.Parameters.AddWithValue("@fonte_leg", mod.fonte_legenda);
+                    command.Parameters.AddWithValue("@t_fonte_bc", mod.tam_font_bc);
+                    command.Parameters.AddWithValue("@t_fonte_leg", mod.tam_font_leg);
+                    command.Parameters.AddWithValue("@conteudo", mod.conteudo);
+                    command.Parameters.AddWithValue("@t_papel", mod.tipo_papel);
+                    command.Parameters.AddWithValue("@inicio", mod.inicio);
+                    command.Parameters.AddWithValue("@intervalo", mod.intervalo);
+                    command.Parameters.AddWithValue("@formato", mod.formato);
+                    command.Parameters.AddWithValue("@prefixo", mod.prefixo);
+                    command.ExecuteNonQuery();
+                }
+                con.Close();
+            }
+            return true;
+        }
+
+        public bool AtualizarModelo(ModeloEtq mod)
+        {
+            using (SqlConnection con = new SqlConnection(str_con))
+            {
+                con.Open();
+
+                using (SqlCommand command = new SqlCommand(@"UPDATE Modelo SET Id_etiqueta = @id_etq,
+                      nome = @nome, fonte_barcode = @fonte_bc, fonte_legenda = @fonte_leg,
+                      tam_font_bc = @t_fonte_bc, tam_font_leg = @t_fonte_leg,
+                      conteudo = @conteudo, tipo_papel = @t_papel, inicio = @inicio, intervalo = @intervalo,
+                      formato = @formato, prefixo = @prefixo WHERE Id = @id", con))
+                {
+                    command.Parameters.AddWithValue("@id", mod.id);
+                    command.Parameters.AddWithValue("@id_etq", mod.etiqueta.id);
+                    command.Parameters.AddWithValue("@nome", mod.nome);
+                    command.Parameters.AddWithValue("@fonte_bc", mod.fonte_barcode);
+                    command.Parameters.AddWithValue("@fonte_leg", mod.fonte_legenda);
+                    command.Parameters.AddWithValue("@t_fonte_bc", mod.tam_font_bc);
+                    command.Parameters.AddWithValue("@t_fonte_leg", mod.tam_font_leg);
+                    command.Parameters.AddWithValue("@conteudo", mod.conteudo);
+                    command.Parameters.AddWithValue("@t_papel", mod.tipo_papel);
+                    command.Parameters.AddWithValue("@inicio", mod.inicio);
+                    command.Parameters.AddWithValue("@intervalo", mod.intervalo);
+                    command.Parameters.AddWithValue("@formato", mod.formato);
+                    command.Parameters.AddWithValue("@prefixo", mod.prefixo);
                     command.ExecuteNonQuery();
                 }
                 con.Close();
