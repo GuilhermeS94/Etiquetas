@@ -114,6 +114,7 @@ namespace e2Etiquetas
             {
                 this.mod = ModeloDAO.getMDAO().GetModelo(this.cmbb.SelectedIndex);
                 PreencheCampos();
+                this.ddlImpressao.SelectedIndex = this.cmbb.SelectedIndex;
             }
             catch (Exception ex)
             {
@@ -200,7 +201,7 @@ namespace e2Etiquetas
             try
             {
                 this.mod = ModeloDAO.getMDAO().GetModelo(this.ddlImpressao.SelectedIndex);
-                PreencheCampos();
+                PreencheCampos(this.ddlImpressao.SelectedIndex);
             }
             catch (Exception ex)
             {
@@ -297,6 +298,48 @@ namespace e2Etiquetas
             }
         }
 
+        private void PreencheCampos(int idModelo)
+        {
+            this.txtTFonteBarCode.Text = mod.tam_font_bc.ToString();
+            this.txtTFonteNome.Text = mod.tam_font_leg.ToString();
+            this.txtFonteNome.Text = mod.fonte_legenda;
+
+            ///Gerador
+            this.txtInicio.Text = mod.inicio.ToString();
+            this.txtFormato.Text = mod.formato;
+            this.txtIntervalo.Text = mod.intervalo.ToString();
+            this.txtPrefixo.Text = mod.prefixo;
+
+            ///DDL's
+            foreach (var etq in EtiquetaDAO.getEDAO().ListarEtiquetas())
+            {
+                this.ddlEtiqueta.Items.Insert(etq.id, etq.nome);
+            }
+            this.ddlEtiqueta.SelectedIndex = mod.etiqueta.id;
+                        
+            this.ddlImpressao.SelectedIndex = idModelo;
+            
+            if (mod.conteudo.Equals(StaticVars.CONTEUDO_BL))
+                this.ddlConteudo.SelectedIndex = 0;
+            else
+                this.ddlConteudo.SelectedIndex = 1;
+            
+            switch (mod.fonte_barcode)
+            {
+                case StaticVars.FONTE_CODE128:
+                    this.ddlFonteCodigo.SelectedIndex = 0;
+                    break;
+
+                case StaticVars.FONTE_3OF9:
+                    this.ddlFonteCodigo.SelectedIndex = 1;
+                    break;
+
+                default:
+                    this.ddlFonteCodigo.SelectedIndex = 2;
+                    break;
+            }
+        }
+
         /// <summary>
         /// salva nas vars e insere/altera no banco
         /// </summary>
@@ -332,7 +375,7 @@ namespace e2Etiquetas
             ModeloEtq mod = new ModeloEtq();
             mod.nome = this.ddlImpressao.Text;
             mod.fonte_barcode = this.ddlFonteCodigo.Text;
-            mod.fonte_legenda = this.txtTFonteNome.Text.Trim();
+            mod.fonte_legenda = this.txtFonteNome.Text.Trim();
             mod.tam_font_bc = byte.Parse(this.txtTFonteBarCode.Text.Trim());
             mod.tam_font_leg = byte.Parse(this.txtTFonteNome.Text.Trim());
             mod.tipo_papel = this.ddlConteudo.Text;
@@ -388,7 +431,7 @@ namespace e2Etiquetas
                     this.ddlImpressao.Items.Insert(modelo.id, modelo.nome);
                 }
                 this.ddlImpressao.SelectedIndex = 0;
-                PreencheCampos();
+                //PreencheCampos();
             }
         }
 
